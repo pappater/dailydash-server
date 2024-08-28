@@ -1,0 +1,23 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# IDE/Editor settings
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+package-lock.json
