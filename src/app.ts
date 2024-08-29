@@ -5,9 +5,8 @@ import mongoose from "mongoose";
 import passport from "passport";
 import session from "express-session";
 import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes";
 import cors from "cors";
-// import userRoutes from './routes/userRoutes';
-
 const app = express();
 app.use(
   cors({
@@ -35,6 +34,6 @@ app.use(passport.session());
 
 // Routes
 app.use("/api/auth", authRoutes);
-// app.use('/api/users', userRoutes);
+app.use("/api/users", userRoutes);
 
 export default app;
