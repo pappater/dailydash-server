@@ -50,7 +50,7 @@ router.get(
   (req, res) => {
     console.log("res", res);
 
-    res.redirect("http://localhost:5174/dashboard");
+    res.redirect("http://localhost:5173/dashboard");
   }
 );
 
@@ -65,7 +65,7 @@ router.get("/user", (req, res) => {
 router.get("/logout", (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);
-    res.redirect("/");
+    res.redirect("http://localhost:5173/");
   });
 });
 
