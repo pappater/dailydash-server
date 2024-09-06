@@ -13,9 +13,10 @@ const userSchema = new mongoose.Schema({
     {
       date: String,
       text: String,
-      completed: { type: Boolean, default: false }, // Add the completed field with a default value
+      completed: { type: Boolean, default: false },
     },
   ],
+  darkMode: { type: Boolean, default: false }, // Add the darkMode field with a default value
 });
 
 const User = mongoose.model("User", userSchema);
@@ -187,6 +188,31 @@ router.put("/calendarEvents/:eventId", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Server Error:", error);
     res.status(500).send("Server Error");
+  }
+});
+
+/// Update dark mode preference
+router.put("/darkMode/:userId", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { darkMode } = req.body; // Expecting { darkMode: boolean }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { googleId: userId },
+      { darkMode },
+      { new: true }
+    );
+
+    if (user) {
+      res
+        .status(200)
+        .json({ message: "Dark mode preference updated successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Server Error:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
