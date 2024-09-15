@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes";
 import scrapeRoutes, { fetchQuotes } from "./routes/scrapeRoutes";
 import cors from "cors";
 import promptRoutes from "./routes/promptRoutes";
+import { mergeJson } from "./scripts";
 
 const app = express();
 app.use(
@@ -40,5 +41,6 @@ app.use("/api/scrape", scrapeRoutes);
 
 // const initialURL = `https://www.nitch.com/posts/?before=1724427573`;
 // fetchQuotes(initialURL);
+// mergeJson();
 
 export default app;

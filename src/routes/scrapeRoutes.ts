@@ -2,6 +2,9 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
+import path from "path";
+const quotesFilePath = path.join(__dirname, "../data/quotes.json");
+
 const fs = require("fs");
 const router = express.Router();
 
@@ -44,71 +47,24 @@ router.get("/chart/:symbol", async (req: Request, res: Response) => {
   }
 });
 
-// const baseURL = "https://www.nitch.com/posts/?before=";
-// const pages = [
-//   1724427573, 1721273434, 1719021043, 1716906161, 1714939514, 1713125153,
-//   1711473816, 1710010309, 1708547878, 1707155133, 1706036783, 1704567314,
-//   1703011956, 1699907031, 1696975175, 1694037291, 1691876245, 1690404982,
-//   1688758681, 1687195051, 1685468467, 1683572981, 1681411950, 1679253366,
-//   1677522755, 1675650778, 1674344183, 1673028201, 1671822999, 1670354665,
-//   1669042632, 1667744532, 1666369377, 1665086314, 1663539495, 1661971654,
-//   1660418439, 1658792389, 1657055937, 1655942424, 1654649463, 1653766358,
-//   1652033574, 1650503065, 1649184551, 1647681986, 1646110424, 1644526055,
-//   1643324665, 1642369647, 1641263011, 1640379933, 1639574731, 1638557084,
-//   1637521979, 1636164763, 1635021810, 1633722217, 1632761223,
-// ];
-
-const baseURL = "https://www.nitch.com/posts/?before=";
-const pages = [
-  // Add the initial page numbers or leave empty if starting fresh
-];
-
-export const fetchQuotes = async (url: string) => {
-  try {
-    // Fetch the HTML of the page
-    const { data } = await axios.get(url);
-
-    // Load the HTML into cheerio
-    const $ = cheerio.load(data);
-
-    // Array to store quotes
-    const quotes: Array<{ author: string; quote: string; image: string }> = [];
-
-    // Adjust the selector based on the actual HTML structure
-    $("article.post").each((index, element) => {
-      const quoteText = $(element).find("p").text().trim();
-      const imageSrc = $(element).find("img").attr("src") || "";
-
-      const [author, quote] = quoteText.split("//").map((text) => text.trim());
-
-      quotes.push({
-        author: author || "",
-        quote: quote || "",
-        image: "https://www.nitch.com" + imageSrc,
-      });
-    });
-
-    console.log("Fetched quotes from:", url);
-    console.log("Quotes:", quotes);
-
-    // Append quotes to quotes.json
-    fs.appendFileSync("quotes.json", JSON.stringify(quotes, null, 2) + ",\n");
-
-    // Find the "Next" link
-    const nextLink = $("footer nav a#next").attr("href");
-
-    if (nextLink) {
-      const nextURL = new URL(nextLink, baseURL).toString();
-      console.log("Next URL:", nextURL);
-
-      // Fetch the next page
-      await fetchQuotes(nextURL);
-    } else {
-      console.log("No more pages.");
-    }
-  } catch (error) {
-    console.error("Error fetching quotes:", error);
-  }
+const getQuotes = () => {
+  const data = fs.readFileSync(quotesFilePath, "utf-8");
+  const quotesArray = JSON.parse(data);
+  // Flatten the multidimensional array
+  const allQuotes = quotesArray.flat();
+  return allQuotes;
 };
+
+// Get the total length of the quotes
+const totalQuotes = getQuotes().length;
+console.log("Total number of quotes:", totalQuotes); // Print the total length
+
+// Route to get a random quote
+router.get("/randomQuote", (req: Request, res: Response) => {
+  const allQuotes = getQuotes();
+  const randomIndex = Math.floor(Math.random() * totalQuotes);
+  const randomQuote = allQuotes[randomIndex];
+  res.json(randomQuote);
+});
 
 export default router;
