@@ -6,7 +6,10 @@ import passport from "passport";
 import session from "express-session";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
+import scrapeRoutes, { fetchQuotes } from "./routes/scrapeRoutes";
 import cors from "cors";
+import promptRoutes from "./routes/promptRoutes";
+
 const app = express();
 app.use(
   cors({
@@ -15,10 +18,7 @@ app.use(
   })
 );
 
-console.log("Loaded Environment Variables:", process.env); // Check all environment variables
-console.log("Loaded GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 const googleClientId = process.env.GOOGLE_CLIENT_ID ?? "hardcoded-client-id";
-console.log("Google Client ID:", googleClientId);
 
 // Middleware
 app.use(express.json());
@@ -35,5 +35,10 @@ app.use(passport.session());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/prompts", promptRoutes);
+app.use("/api/scrape", scrapeRoutes);
+
+// const initialURL = `https://www.nitch.com/posts/?before=1724427573`;
+// fetchQuotes(initialURL);
 
 export default app;

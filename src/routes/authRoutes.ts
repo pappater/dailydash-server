@@ -10,7 +10,6 @@ interface UserProfile {
 }
 
 const router = Router();
-console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 // Configure Passport Google strategy
 passport.use(
   new GoogleStrategy(
@@ -21,7 +20,6 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       // Handle user data here
-      console.log("profile", profile);
 
       done(null, profile);
     }
@@ -50,7 +48,7 @@ router.get(
   (req, res) => {
     console.log("res", res);
 
-    res.redirect("http://localhost:5174/dashboard");
+    res.redirect("http://localhost:5173/dashboard");
   }
 );
 

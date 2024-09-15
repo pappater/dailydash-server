@@ -133,7 +133,6 @@ router.get("/calendarEvents/:googleId", async (req: Request, res: Response) => {
     const user = await User.findOne({ googleId });
 
     if (user) {
-      console.log("Fetched calendar events:", user.calendarEvents);
       res.status(200).json(user.calendarEvents || []);
     } else {
       res.status(404).send("User not found");
